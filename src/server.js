@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import pino from "pino-http";
 
-import { env } from "./utils/env.js";
+import { env } from "./untils/env.js";
 
-import * as movieServices from "./services/movies.js";
+import * as contactServices from "./services/contacts.js";
 
 
 export const startServer = ()=> {
@@ -20,29 +20,29 @@ export const startServer = ()=> {
     app.use(cors());
     app.use(express.json());
 
-    app.get("/movies", async (req, res)=> {
-       const data = await movieServices.getAllMovies();
+    app.get("/contacts", async (req, res)=> {
+       const data = await contactServices.getAllContact();
 
         res.json({
             status: 200,
-            message: "Successfully found movies",
+            message: "Successfully found contacts",
             data,
         });
     });
 
-    app.get("/movies/:id", async(req, res)=> {
+    app.get("/contacts/:id", async(req, res)=> {
         const {id} = req.params;
-        const data = await movieServices.getMovieById(id);
+        const data = await contactServices.getContactById(id);
 
         if(!data) {
             return res.status(404).json({
-                message: `Movie with id=${id} not found`
+                message: `Contact with id=${id} not found`
             });
         }
 
         res.json({
             status: 200,
-            message: `Movie with ${id} successfully find`,
+            message: `Contact with ${id} successfully find`,
             data,
         });
     });

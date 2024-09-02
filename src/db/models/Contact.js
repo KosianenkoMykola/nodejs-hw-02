@@ -1,22 +1,24 @@
 import {Schema, model} from "mongoose";
 
 const ContactSchema = new Schema({
-    title: {
+    name: {
         type: String,
         required: true,
     },
-    director: {
+    phoneNumber: {
         type: String,
         required: true,
     },
-    genre: {
-        type: String,
-        enum: ["fantastic", "love story"],
-        required: true,
-    },
-    favorite: {
+    email: String,
+    isFavourite: {
         type: Boolean,
         default: false,
+        required: true,
+    },
+    contactType: {
+        type: String,
+        enum: ["work", "home", "personal"],
+        default: "personal",
         required: true,
     }
 }, {versionKey: false, timestamps: true});
