@@ -1,6 +1,40 @@
 import ContactCollection from "../db/models/Contact.js";
 
-export const getAllContact = ()=> ContactCollection.find();
+import calculatePaginationData from "../untils/calculatePaginationData.js";
+
+import {SORT_ORDER} from "../constans/index.js";
+
+export const getContacts = async ({
+    perPage,
+    page, 
+    sortBy = "_id", 
+    sortOrder = SORT_ORDER[0],
+    filter = {},
+})=> {
+    const skip = (page - 1) * perPage;
+    const contactQuery = ContactCollection.find(); 
+    
+    if(filter.minReleaseYear) {
+        contactQuery.where("releaseYear").gte(filter.minReleaseYear);
+    }
+    if(filter.maxReleaseYear) {
+        contactQuery.where("releaseYear").lte(filter.maxReleaseYear);
+    }
+
+    const contacts = await contactQuery.skip(skip).limit(perPage).sort({[sortBy]: sortOrder});
+    
+    const count = await ContactCollection.find().merge(contactQuery).countDocuments();
+
+    const paginationData = calculatePaginationData({count, perPage, page});
+
+    return {
+        page,
+        perPage,
+        contacts,
+        totalItems: count,
+        ...paginationData,
+    };
+};
 
 export const getContactById = id => ContactCollection.findById(id);
 
@@ -8,7 +42,6 @@ export const createContact = payload => ContactCollection.create(payload);
 
 export const updateContact = async(filter, data, options = {})=> {
     const rawResult = await ContactCollection.findOneAndUpdate(filter, data, {
-        new: true,
         includeResultMetadata: true,
         ...options,
     });

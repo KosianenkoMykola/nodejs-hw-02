@@ -2,14 +2,30 @@ import createHttpError from 'http-errors';
 
 import * as contactServices from "../services/contacts.js";
 
-export const getAllContactController = async (req, res) => {
-    const data = await contactServices.getAllContact();
+import parsePaginationParams from '../untils/parsePaginationParams.js';
+import parseSortParams from '../untils/parseSortParams.js';
+import parseContactFilterParams from '../untils/filters/parseContactFilterParams.js';
 
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts',
-      data,
-    });
+import { sortFields } from '../db/models/Contact.js';
+
+export const getAllContactController = async (req, res) => {
+  const { perPage, page } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
+  const filter = parseContactFilterParams(req.query);
+
+  const data = await contactServices.getContacts({
+    perPage,
+    page,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts',
+    data,
+  });
 };
 
 export const getContactByIdController = async (req, res) => {
@@ -39,7 +55,11 @@ export const addContactController = async(req, res)=> {
 
 export const upsertContactController = async(req, res)=> {
   const {id} = req.params;
-  const {isNew, data} = await contactServices.updateContact({_id: id}, req.body, {upsert: true});
+  const {isNew, data} = await contactServices.updateContact(
+    {_id: id}, 
+    req.body, 
+    {upsert: true},
+  );
 
   const status = isNew ? 201 : 200;
 
