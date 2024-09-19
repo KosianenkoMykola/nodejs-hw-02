@@ -2,7 +2,7 @@ import ContactCollection from "../db/models/Contact.js";
 
 import calculatePaginationData from "../untils/calculatePaginationData.js";
 
-import {SORT_ORDER} from "../constans/index.js";
+import {SORT_ORDER} from "../constants/index.js";
 
 export const getContacts = async ({
     perPage,

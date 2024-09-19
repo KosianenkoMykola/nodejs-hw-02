@@ -1,5 +1,5 @@
 import {Schema, model} from "mongoose";
-import {contactList} from "../../constans/contacts.js";
+import {contactList} from "../../constants/contacts.js";
 
 import { handleSaveError, setUpdateOptions } from "./hooks.js";
 
@@ -22,6 +22,11 @@ const ContactSchema = new Schema({
         type: String,
         enum: contactList,
         default: "personal",
+        required: true,
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
         required: true,
     }
 }, {versionKey: false, timestamps: true});
