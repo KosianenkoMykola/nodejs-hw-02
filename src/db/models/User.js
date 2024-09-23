@@ -5,7 +5,7 @@ import { emailRegexp } from "../../constants/users.js";
 import { handleSaveError, setUpdateOptions } from "./hooks.js";
 
 const userSchema = new Schema({
-    username: {
+    name: {
         type: String,
         required: true,
     },
