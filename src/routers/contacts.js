@@ -2,6 +2,7 @@ import {Router} from "express";
 
 import * as contactControllers from "../controllers/contacts.js";
 
+import authenticate from "../middlewares/authenticate.js";
 import isValidId from "../middlewares/isValidId.js";
 
 import validateBody from "../untils/validateBody.js";
@@ -10,6 +11,8 @@ import ctrlWrapper from "../untils/ctrlWrapper.js";
 import { contactAddSchema, contactPatchSchema } from "../validation/contacts.js";
 
 const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", ctrlWrapper(contactControllers.getAllContactController));
 
