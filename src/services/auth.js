@@ -80,6 +80,19 @@ export const verify = async token => {
     await UserCollection.findOneAndUpdate({_id: user._id}, {verify: true});
 };
 
+export const changePwd = async (token, password) => {
+ const {data} = verifyToken(token);
+
+ const user = await UserCollection.findOne({email: data.email});
+ if(!user) {
+     throw createHttpError(401, "Email or password invalid");
+ }
+    const hashPassword = await bcrypt.hash(password, 10);
+    
+    await user.updateOne({password: hashPassword});
+  
+};
+
 export const signin = async(payload)=> {
     const {email, password} = payload;
     const user = await UserCollection.findOne({email});
@@ -141,3 +154,6 @@ export const signout = async (sessionId)=> {
 };
 
 export const findUser = filter => UserCollection.findOne(filter);
+
+
+export const findByEmail = ( email ) => UserCollection.findOne( { email } ); 

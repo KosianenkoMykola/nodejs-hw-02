@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 
 import * as authServices from "../services/auth.js";
+import {verifyToken} from "../untils/jwt.js";
 
 const authenticate = async(req, res, next)=> {
     // const {authorization} = req.headers;
@@ -15,17 +16,25 @@ const authenticate = async(req, res, next)=> {
     if(bearer !== "Bearer") {
         return next(createHttpError(401, "Authorization header must have Bearer type"));
     }
+    
+    let tokenPayload = null;
 
-    const session = await authServices.findSessionByAccessToken(token);
-    if(!session) {
-        return next(createHttpError(401, "Session not found"));
+    try {
+        tokenPayload = verifyToken(token, process.env.JWT_SECRET);
+    } catch {
+        return next(createHttpError(401, "Invalid jwt"));
     }
 
-    if(new Date() > session.accessTokenValidUntil) {
-        return next(createHttpError(401, "Access token expired"));
-    }
+    // const session = await authServices.findSessionByAccessToken(token);
+    // if(!session) {
+    //     return next(createHttpError(401, "Session not found"));
+    // }
 
-    const user = await authServices.findUser({_id: session.userId});
+    // if(new Date() > session.accessTokenValidUntil) {
+    //     return next(createHttpError(401, "Access token expired"));
+    // }
+
+    const user = await authServices.findUser({email: tokenPayload.data.email});
     if(!user) {
         return next(createHttpError(401, "User not found"));
     }

@@ -4,9 +4,6 @@ import createHttpError from "http-errors";
 import { TEMP_UPLOAD_DIR } from "../constants/index.js";
 
 const storage = multer.diskStorage({
-    // destination: (req, file, callback)=> {
-    //     callback(null, TEMP_UPLOAD_DIR);
-    // },
     destination: TEMP_UPLOAD_DIR,
     filename: (req, file, callback)=> {
         const uniquePreffix = `${Date.now()}_${Math.round(Math.random() * 1E9)}`;

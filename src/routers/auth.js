@@ -5,13 +5,15 @@ import * as authControllers from "../controllers/auth.js";
 import ctrlWrapper from "../untils/ctrlWrapper.js";
 import validateBody from "../untils/validateBody.js";
 
-import {userSignupSchema, userSigninSchema} from "../validation/users.js";
+import {userSignupSchema, userSigninSchema, resetPwdSchema} from "../validation/users.js";
 
 const authRouter = Router();
 
 authRouter.post("/register", validateBody(userSignupSchema), ctrlWrapper(authControllers.signupController));
 
 authRouter.post("/send-reset-email", ctrlWrapper(authControllers.sendResetEmail));
+
+authRouter.post("/reset-pwd", validateBody(resetPwdSchema),ctrlWrapper(authControllers.resetPwd));
 
 authRouter.get("/verify", ctrlWrapper(authControllers.verifyController));
 
