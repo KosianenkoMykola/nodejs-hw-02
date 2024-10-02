@@ -1,13 +1,13 @@
-const calculatePaginationData = ({count, perPage, page})=> {
-    const totalPages = Math.ceil(count / perPage);
-    const hasNextPage = page < totalPages;
-    const hasPreviousPage = page !== 1;
-
+const calculatePaginationData = ({ count, perPage, page }) => {
+    const totalPage = Math.ceil(count / perPage);
+    const hasNextPage = page < totalPage;
+    const hasPrevPage = page !== 1;
+  
     return {
-        totalPages,
-        hasNextPage,
-        hasPreviousPage,
+      totalPage,
+      hasPrevPage,
+      hasNextPage,
     };
-};
-
-export default calculatePaginationData;
+  };
+  
+  export default calculatePaginationData;

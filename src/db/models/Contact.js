@@ -1,42 +1,57 @@
-import {Schema, model} from "mongoose";
-import {contactList} from "../../constants/contacts.js";
+import { Schema, model } from 'mongoose';
+import { enumList } from '../../constants/contacts.js';
+import { handleSaveError } from './hooks.js';
 
-import { handleSaveError, setUpdateOptions } from "./hooks.js";
 
-const ContactSchema = new Schema({
+const contactSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: [true, 'name must be exist'],
     },
     phoneNumber: {
-        type: String,
-        required: true,
+      type: String,
+      required: [true, 'phoneNumber must be exist'],
     },
-    email: String,
-    isFavourite: {
-        type: Boolean,
-        default: false,
-        required: true,
+    email: {
+      type: String,
+      required: false,
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false,
+      require: [true, 'isFavorite must be exist'],
     },
     contactType: {
-        type: String,
-        enum: contactList,
-        default: "personal",
-        required: true,
+      type: String,
+      enum: enumList,
+      required: [true, 'contactType must be exist'],
+      default: 'personal',
     },
     photo: {
-        type: String,
-    }
-}, {versionKey: false, timestamps: true});
+      type: String,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
+  },
+  { versionKey: false, timestamps: true },
+);
 
-ContactSchema.post("save", handleSaveError);
+contactSchema.post('save', handleSaveError);
 
-ContactSchema.pre("findOneAndUpdate", setUpdateOptions);
+const ContactCollection = model('contact', contactSchema);
 
-ContactSchema.post("findOneAndUpdate", handleSaveError);
-
-const ContactCollection = model("contact", ContactSchema);
-
-export const sortFields = ["name", "phoneNumber", "email", "isFavourite", "contactType", "createdAt", "updatedAt"];
+export const sortFields = [
+  'name',
+  'phoneNumber',
+  'email',
+  'isFavorite',
+  'contactType',
+  'createdAt',
+  'updatedAt',
+];
 
 export default ContactCollection;

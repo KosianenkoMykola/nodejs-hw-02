@@ -1,8 +1,9 @@
-const errorHandler = (error, req, res, next)=> {
-    const {status = 500, message} = error;
-    res.status(status).json({
-        message,
+const errorHandler = (error, req, res, next) => {
+    const statusCode = error.status || 500;
+  
+    res.status(statusCode).json({
+      status: statusCode,
+      message: statusCode === 500 ? 'Something went wrong' : error.message,
     });
-};
-
-export default errorHandler;
+  };
+  export default errorHandler;

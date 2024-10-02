@@ -1,14 +1,13 @@
-import * as fs from "node:fs/promises";
+import * as fs from 'node:fs/promises';
 
-const createDirIfNotExists = async path => {
-    try {
-        await fs.access(path);
+const createDirIfNoteExists = async (path) => {
+  try {
+    await fs.access(path);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      await fs.mkdir(path);
     }
-    catch(error) {
-        if(error.code === "ENOENT") {
-            await fs.mkdir(path);
-        }
-    }
+  }
 };
 
-export default createDirIfNotExists;
+export default createDirIfNoteExists;
